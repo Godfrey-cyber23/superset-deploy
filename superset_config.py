@@ -16,7 +16,7 @@ SECRET_KEY = os.environ.get(
 )
 
 # CORS for your frontend
-ENABLE_CORS = True
+ENABLE_CORS = False
 CORS_OPTIONS = {
     'supports_credentials': True,
     'allow_headers': ['*'],
