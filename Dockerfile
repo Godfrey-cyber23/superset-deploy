@@ -2,6 +2,16 @@ FROM apache/superset:latest
 
 USER root
 
+# Install system dependencies for MySQL connectivity
+RUN apt-get update && \
+    apt-get install -y \
+    pkg-config \
+    python3-dev \
+    default-libmysqlclient-dev \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
 # Install both MySQL drivers for maximum compatibility
 RUN pip install --no-cache-dir mysqlclient PyMySQL
 
