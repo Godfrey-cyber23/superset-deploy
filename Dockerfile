@@ -2,16 +2,8 @@ FROM apache/superset:latest
 
 USER root
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    default-libmysqlclient-dev \
-    pkg-config \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# Install PyMySQL driver (more reliable than mysqlclient in Docker)
-RUN pip install --no-cache-dir PyMySQL
+# Install both MySQL drivers for maximum compatibility
+RUN pip install --no-cache-dir mysqlclient PyMySQL
 
 # Copy custom configuration
 COPY superset_config.py /app/
