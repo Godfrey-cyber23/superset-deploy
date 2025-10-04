@@ -4,11 +4,13 @@ set -e
 echo "Waiting for database to be ready..."
 sleep 5
 
+echo "Checking Python environment and installed packages..."
+python -c "import pymysql; print('PyMySQL successfully imported')" || echo "PyMySQL not available"
+
 echo "Upgrading database schema..."
 superset db upgrade
 
-echo "Creating admin user..."
-# Check if admin user already exists
+echo "Creating admin user if needed..."
 if ! superset fab list-users | grep -q "admin"; then
     superset fab create-admin \
         --username admin \
