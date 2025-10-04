@@ -3,11 +3,14 @@ import os
 # Use Render's provided PORT
 PORT = int(os.environ.get("PORT", 8088))
 
-# Use SQLite for Superset metadata (built-in, no external dependencies)
-SQLALCHEMY_DATABASE_URI = os.environ.get(
-    "SQLALCHEMY_DATABASE_URI", 
-    "sqlite:////app/superset_home/superset.db"
-)
+# AWS MySQL Database Configuration
+# It is safer to get the entire URI from the environment variable set in render.yml
+SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
+# If you must set a fallback, use the pymysql driver:
+# SQLALCHEMY_DATABASE_URI = os.environ.get(
+#     "SQLALCHEMY_DATABASE_URI",
+#     "mysql+pymysql://admin:password@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
+# )
 
 # Secret key
 SECRET_KEY = os.environ.get(
@@ -16,7 +19,7 @@ SECRET_KEY = os.environ.get(
 )
 
 # CORS for your frontend
-ENABLE_CORS = False
+ENABLE_CORS = True
 CORS_OPTIONS = {
     'supports_credentials': True,
     'allow_headers': ['*'],
@@ -46,3 +49,14 @@ CACHE_CONFIG = {
     'CACHE_TYPE': 'SimpleCache',
     'CACHE_DEFAULT_TIMEOUT': 300
 }
+
+# Database connection pool settings (important for production)
+SQLALCHEMY_ENGINE_OPTIONS = {
+    'pool_recycle': 3600,  # Recycle connections before AWS RDS timeout
+    'pool_pre_ping': True, # Verify connection is alive before using
+    'pool_size': 10,
+    'max_overflow': 20,
+}
+
+# Enable proxy fix for handling headers correctly behind Render's load balancer
+ENABLE_PROXY_FIX = True
