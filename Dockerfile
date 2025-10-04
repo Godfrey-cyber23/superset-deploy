@@ -6,7 +6,7 @@ USER root
 RUN apt-get update && \
     apt-get install -y default-libmysqlclient-dev build-essential pkg-config
 
-# Ensure we're using the virtual environment's pip
+# Install MySQL drivers into Superset's virtual environment
 RUN /app/.venv/bin/pip install --no-cache-dir mysqlclient pymysql
 
 # Copy your configuration and scripts

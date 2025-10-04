@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e
 
+echo "Checking Python environment and installed packages..."
+/app/.venv/bin/python -c "import pymysql; print('PyMySQL successfully imported')"
+/app/.venv/bin/python -c "import mysqlclient; print('mysqlclient successfully imported')"
+
 echo "Waiting for database to be ready..."
 sleep 5
-
-echo "Checking Python environment and installed packages..."
-python -c "import pymysql; print('PyMySQL successfully imported')" || echo "PyMySQL not available"
 
 echo "Upgrading database schema..."
 superset db upgrade
