@@ -1,26 +1,34 @@
 FROM apache/superset:latest
 
+# Switch to root for system package installation
 USER root
 
-# Install MySQL client with all required dependencies
+# Install MySQL client dependencies and build tools
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     pkg-config \
     build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
-# Install MySQL client using the system packages
-RUN pip install mysqlclient
+# Install MySQL database driver
+RUN pip install --no-cache-dir mysqlclient
 
-# Copy custom configuration FIRST
+# Copy custom configuration
 COPY superset_config.py /app/
 
+# Switch to non-privileged user for application execution
 USER superset
 
-# Set environment variable for secret key
+# Set production secret key
 ENV SUPERSET_SECRET_KEY="nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
 
-# Initialize Superset with secure admin credentials
-RUN superset db upgrade
-RUN superset fab create-admin --username admin --firstname Admin --lastname User --email godfreyb998@gmail.com --password Go1d3fre#y
-RUN superset init
+# Initialize Superset application
+RUN superset db upgrade && \
+    superset fab create-admin \
+        --username admin \
+        --firstname Admin \
+        --lastname User \
+        --email godfreyb998@gmail.com \
+        --password Go1d3fre#y && \
+    superset init
