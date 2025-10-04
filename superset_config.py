@@ -7,10 +7,10 @@ PORT = int(os.environ.get("PORT", 8088))
 # It is safer to get the entire URI from the environment variable set in render.yml
 SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 # If you must set a fallback, use the pymysql driver:
-# SQLALCHEMY_DATABASE_URI = os.environ.get(
-#     "SQLALCHEMY_DATABASE_URI",
-#     "mysql+pymysql://admin:password@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
-# )
+SQLALCHEMY_DATABASE_URI = os.environ.get(
+    "SQLALCHEMY_DATABASE_URI",
+    "mysql+pymysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
+)
 
 # Secret key
 SECRET_KEY = os.environ.get(
