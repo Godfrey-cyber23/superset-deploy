@@ -1,18 +1,12 @@
-# Dockerfile
-
 FROM apache/superset:latest
-
-# Force a rebuild on 2025-10-04
 
 # Switch to root to install packages
 USER root
 
-# Install system dependencies required for pymysql
+# Install system dependencies and the mysqlclient Python package
 RUN apt-get update && \
-    apt-get install -y python3-dev default-libmysqlclient-dev build-essential
-
-# Install the MySQL client driver (pymysql)
-RUN pip install --no-cache-dir pymysql
+    apt-get install -y default-libmysqlclient-dev build-essential pkg-config && \
+    pip install --no-cache-dir mysqlclient
 
 # Copy your custom configuration file into the container
 COPY superset_config.py /app/superset_config.py
