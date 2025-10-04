@@ -2,18 +2,6 @@ FROM apache/superset:latest
 
 USER root
 
-# Install system dependencies for database connectivity
-RUN apt-get update && \
-    apt-get install -y \
-    pkg-config \
-    default-libmysqlclient-dev \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# Install database drivers
-RUN pip install --no-cache-dir mysqlclient PyMySQL
-
 # Copy custom configuration
 COPY superset_config.py /app/
 

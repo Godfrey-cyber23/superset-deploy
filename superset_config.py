@@ -3,19 +3,11 @@ import os
 # Use Render's provided PORT
 PORT = int(os.environ.get("PORT", 8088))
 
-# Database configuration - FORCE PyMySQL dialect
+# Use SQLite for Superset metadata (built-in, no external dependencies)
 SQLALCHEMY_DATABASE_URI = os.environ.get(
     "SQLALCHEMY_DATABASE_URI", 
-    "mysql+pymysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
+    "sqlite:////app/superset_home/superset.db"
 )
-
-# Force SQLAlchemy to use PyMySQL dialect
-SQLALCHEMY_ENGINE_OPTIONS = {
-    'pool_recycle': 3600,
-    'pool_pre_ping': True,
-    'pool_size': 10,
-    'max_overflow': 20,
-}
 
 # Secret key
 SECRET_KEY = os.environ.get(
