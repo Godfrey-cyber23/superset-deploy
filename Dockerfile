@@ -2,8 +2,8 @@ FROM apache/superset:latest
 
 USER root
 
-# Install required Python packages
-RUN pip install --no-cache-dir flask-cors
+# Install flask-cors using the virtual environment's pip
+RUN /app/.venv/bin/pip install --no-cache-dir flask-cors
 
 # Copy custom configuration
 COPY superset_config.py /app/
