@@ -1,23 +1,20 @@
-# Dockerfile
-
 FROM apache/superset:latest
 
-# Switch to root to install packages
+# Switch to root to install system dependencies
 USER root
 
 # Install system dependencies required for mysqlclient
 RUN apt-get update && \
     apt-get install -y default-libmysqlclient-dev build-essential pkg-config
 
-# Install mysqlclient into the Superset virtual environment.
-# Using 'python -m pip' is more reliable than calling pip directly.
-RUN /app/.venv/bin/python -m pip install --no-cache-dir mysqlclient
+# Switch to superset user to install the Python package
+USER superset
+
+# Install mysqlclient using the superset user's pip
+RUN pip install --no-cache-dir mysqlclient
 
 # Copy your custom configuration file into the container
 COPY superset_config.py /app/superset_config.py
-
-# Switch back to the superset user for security
-USER superset
 
 # Set the secret key environment variable
 ENV SUPERSET_SECRET_KEY="nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
