@@ -4,10 +4,11 @@ services:
     env: docker
     docker:
       dockerfile: Dockerfile
-      dockerContext: .
     envVars:
       - key: SUPERSET_SECRET_KEY
         value: "nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
       - key: SQLALCHEMY_DATABASE_URI
         value: "mysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
+      - key: ADMIN_PASSWORD
+        value: "Go1d3fre#y"
     plan: free

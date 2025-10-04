@@ -12,14 +12,15 @@ RUN apt-get update && apt-get install -y \
 # Install MySQL client using the system packages
 RUN pip install mysqlclient
 
-# Copy custom configuration
+# Copy custom configuration FIRST
 COPY superset_config.py /app/
 
 USER superset
 
-# Initialize Superset
-RUN superset db upgrade
-RUN superset fab create-admin --username admin --firstname Admin --lastname User --email admin@example.com --password admin
-RUN superset init
+# Set environment variable for secret key
+ENV SUPERSET_SECRET_KEY="nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
 
-# The base image already has the startup command
+# Initialize Superset with secure admin credentials
+RUN superset db upgrade
+RUN superset fab create-admin --username admin --firstname Admin --lastname User --email godfreyb998@gmail.com --password Go1d3fre#y
+RUN superset init
