@@ -1,24 +1,28 @@
 #!/bin/bash
-# Script to initialize Superset
-
 set -e
 
-# Upgrade the database
+echo "Waiting for database to be ready..."
+sleep 5
+
+echo "Upgrading database schema..."
 superset db upgrade
 
-# Check if the admin user exists, if not, create it
-if [ ! -f /app/.admin_created ]; then
+echo "Creating admin user..."
+# Check if admin user already exists
+if ! superset fab list-users | grep -q "admin"; then
     superset fab create-admin \
         --username admin \
         --firstname Admin \
         --lastname User \
         --email godfreyb998@gmail.com \
         --password Go1d3fre#y
-    touch /app/.admin_created
+    echo "Admin user created"
+else
+    echo "Admin user already exists"
 fi
 
-# Initialize Superset
+echo "Initializing Superset..."
 superset init
 
-# Start the server
+echo "Starting Superset server..."
 exec superset run -p 8088 --with-threads --reload --debugger --host=0.0.0.0

@@ -1,31 +1,19 @@
 import os
 
-# Use Render's provided PORT
+# Server configuration
 PORT = int(os.environ.get("PORT", 8088))
 
-# --- Database Configuration ---
+# Database Configuration - Use mysqlclient (more reliable)
 SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
-# Secret key - ensure this is properly generated
-SECRET_KEY = os.environ.get(
-    "SUPERSET_SECRET_KEY", 
-    "nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
-)
+# Secret key
+SECRET_KEY = os.environ.get("SUPERSET_SECRET_KEY")
 
-# --- Database Connection Pool Optimization ---
-SQLALCHEMY_ENGINE_OPTIONS = {
-    'pool_size': 5,                    # Default and typically sufficient
-    'max_overflow': 10,                # Default overflow capacity
-    'pool_recycle': 1800,              # Recycle connections every 30 minutes
-    'pool_pre_ping': True,             # Verify connection health before use
-    'pool_timeout': 30,                # Connection timeout in seconds
-}
+# Security settings
+WTF_CSRF_ENABLED = True
+WTF_CSRF_TIME_LIMIT = 3600
 
-# --- Production Security & Performance ---
-# Enable proxy fix for Render's load balancer
-ENABLE_PROXY_FIX = True
-
-# CORS for your frontend
+# CORS configuration
 ENABLE_CORS = True
 CORS_OPTIONS = {
     'supports_credentials': True,
@@ -41,21 +29,31 @@ CORS_OPTIONS = {
 # Public role permissions
 PUBLIC_ROLE_LIKE = "Gamma"
 
-# Security settings
-WTF_CSRF_ENABLED = True
-WTF_CSRF_TIME_LIMIT = 3600
-
 # Feature flags
 FEATURE_FLAGS = {
     "ENABLE_TEMPLATE_PROCESSING": True,
     "ALERT_REPORTS": True,
 }
 
-# Cache configuration - consider Redis for production
+# Database connection pool settings
+SQLALCHEMY_ENGINE_OPTIONS = {
+    'pool_recycle': 3600,
+    'pool_pre_ping': True,
+    'pool_size': 5,
+    'max_overflow': 10,
+    'pool_timeout': 30,
+}
+
+# Cache configuration
 CACHE_CONFIG = {
-    'CACHE_TYPE': 'SimpleCache',  # Upgrade to RedisCache for production
+    'CACHE_TYPE': 'SimpleCache',
     'CACHE_DEFAULT_TIMEOUT': 300
 }
 
-# Optional: For additional database connections
-# PREVENT_UNSAFE_DB_CONNECTIONS = False  # Set to True in production
+# Enable proxy fix for Render's load balancer
+ENABLE_PROXY_FIX = True
+
+# Security headers
+SESSION_COOKIE_SECURE = False  # Set to True if using HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
