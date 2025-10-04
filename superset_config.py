@@ -3,13 +3,13 @@ import os
 # Use Render's provided PORT
 PORT = int(os.environ.get("PORT", 8088))
 
-# Database configuration
+# Database configuration - MUST use PyMySQL driver
 SQLALCHEMY_DATABASE_URI = os.environ.get(
     "SQLALCHEMY_DATABASE_URI", 
-    "mysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
+    "mysql+pymysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
 )
 
-# Secret key - use your generated key as fallback
+# Secret key
 SECRET_KEY = os.environ.get(
     "SUPERSET_SECRET_KEY", 
     "nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
@@ -24,7 +24,7 @@ CORS_OPTIONS = {
     'origins': [
         'https://exam-system-frontend-eight.vercel.app',
         'http://localhost:3000',
-        'http://localhost:5173'  # Added your dev frontend URL
+        'http://localhost:5173'
     ]
 }
 
@@ -47,13 +47,6 @@ CACHE_CONFIG = {
     'CACHE_DEFAULT_TIMEOUT': 300
 }
 
-# File upload configuration
-UPLOAD_FOLDER = '/app/superset_home/uploads'
-MAX_UPLOAD_SIZE = 16 * 1024 * 1024  # 16MB
-
-# Talisman security headers (for production)
-ENABLE_PROXY_FIX = True
-
 # Database connection pool settings
 SQLALCHEMY_ENGINE_OPTIONS = {
     'pool_recycle': 3600,
@@ -61,6 +54,3 @@ SQLALCHEMY_ENGINE_OPTIONS = {
     'pool_size': 10,
     'max_overflow': 20,
 }
-
-# Optional: If you want to enable public dashboard sharing
-PUBLIC_DASHBOARDS_ENABLED = True
