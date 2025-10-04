@@ -1,12 +1,18 @@
+# Dockerfile
+
 FROM apache/superset:latest
 
 # Switch to root to install packages
 USER root
 
-# Install system dependencies and the mysqlclient Python package
+# Install system dependencies required for pymysql
 RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev build-essential pkg-config && \
-    pip install --no-cache-dir mysqlclient
+    apt-get install -y python3-dev default-libmysqlclient-dev build-essential
+
+# --- THE FIX ---
+# Install pymysql into the Superset virtual environment, not the system Python.
+# This ensures the running application can find the module.
+RUN /app/.venv/bin/pip install --no-cache-dir pymysql
 
 # Copy your custom configuration file into the container
 COPY superset_config.py /app/superset_config.py
