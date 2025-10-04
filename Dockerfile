@@ -1,34 +1,32 @@
-# Dockerfile
-
 FROM apache/superset:latest
 
 # Switch to root to install packages
 USER root
 
-# Install system dependencies required for pymysql
+# Install system dependencies and the recommended MySQL driver
 RUN apt-get update && \
-    apt-get install -y python3-dev default-libmysqlclient-dev build-essential
-
-# --- THE FIX ---
-# Install pymysql into the Superset virtual environment, not the system Python.
-# This ensures the running application can find the module.
-RUN /app/.venv/bin/pip install --no-cache-dir pymysql
+    apt-get install -y default-libmysqlclient-dev build-essential pkg-config && \
+    # Install mysqlclient, the preferred MySQL driver for production:cite[6]
+    /app/.venv/bin/pip install --no-cache-dir mysqlclient
 
 # Copy your custom configuration file into the container
 COPY superset_config.py /app/superset_config.py
 
+# --- THE ULTIMATE FIX: Use an entrypoint script ---
+# Copy the entrypoint script
+COPY superset-init.sh /app/
+# Make the script executable
+RUN chmod +x /app/superset-init.sh
+
 # Switch back to the superset user for security
 USER superset
 
-# Set the secret key environment variable
-ENV SUPERSET_SECRET_KEY="nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
+# --- REMOVE HARDCODED SECRETS AND SETUP COMMANDS ---
+# The secret key and database setup will be handled via environment variables
+# and the entrypoint script. Do not run `superset db upgrade` etc. in the Dockerfile.
 
-# Run database migrations, create an admin user, and load initial data
-RUN superset db upgrade && \
-    superset fab create-admin \
-        --username admin \
-        --firstname Admin \
-        --lastname User \
-        --email godfreyb998@gmail.com \
-        --password Go1d3fre#y && \
-    superset init
+# Set the configuration path
+ENV SUPERSET_CONFIG_PATH /app/superset_config.py
+
+# Use the custom script as the entrypoint
+CMD ["/app/superset-init.sh"]
