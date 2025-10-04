@@ -1,26 +1,33 @@
+# Dockerfile
+
 FROM apache/superset:latest
 
 # Switch to root to install packages
 USER root
 
-# Install system dependencies and BOTH MySQL drivers for compatibility
+# Install system dependencies required for mysqlclient
 RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev build-essential pkg-config && \
-    pip install --no-cache-dir mysqlclient pymysql
+    apt-get install -y default-libmysqlclient-dev build-essential pkg-config
+
+# Install mysqlclient into the Superset virtual environment.
+# Using 'python -m pip' is more reliable than calling pip directly.
+RUN /app/.venv/bin/python -m pip install --no-cache-dir mysqlclient
 
 # Copy your custom configuration file into the container
 COPY superset_config.py /app/superset_config.py
 
-# Copy the entrypoint script
-COPY superset-init.sh /app/
-# Make the script executable
-RUN chmod +x /app/superset-init.sh
-
 # Switch back to the superset user for security
 USER superset
 
-# Set the configuration path
-ENV SUPERSET_CONFIG_PATH /app/superset_config.py
+# Set the secret key environment variable
+ENV SUPERSET_SECRET_KEY="nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
 
-# Use the custom script as the entrypoint
-CMD ["/app/superset-init.sh"]
+# Run database migrations, create an admin user, and load initial data
+RUN superset db upgrade && \
+    superset fab create-admin \
+        --username admin \
+        --firstname Admin \
+        --lastname User \
+        --email godfreyb998@gmail.com \
+        --password Go1d3fre#y && \
+    superset init
