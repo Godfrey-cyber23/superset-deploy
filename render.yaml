@@ -8,5 +8,5 @@ services:
       - key: SUPERSET_SECRET_KEY
         generateValue: true
       - key: SQLALCHEMY_DATABASE_URI
-        value: "mysql+mysqldb://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
+        value: "mysql+pymysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
     plan: free

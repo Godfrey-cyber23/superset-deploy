@@ -4,8 +4,13 @@ USER root
 
 # Install system dependencies and BOTH MySQL drivers
 RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev build-essential pkg-config && \
-    pip install --no-cache-dir mysqlclient pymysql
+    apt-get install -y default-libmysqlclient-dev build-essential pkg-config
+
+# Install MySQL drivers into the Superset virtual environment
+# Try multiple methods to ensure installation in the correct environment
+RUN pip install --no-cache-dir mysqlclient pymysql || \
+    /app/.venv/bin/pip install --no-cache-dir mysqlclient pymysql || \
+    python -m pip install --no-cache-dir mysqlclient pymysql
 
 # Copy your configuration and scripts
 COPY superset_config.py /app/superset_config.py
