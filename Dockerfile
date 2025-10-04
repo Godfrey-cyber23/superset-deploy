@@ -2,8 +2,14 @@ FROM apache/superset:latest
 
 USER root
 
-# Install MySQL client
-RUN apt-get update && apt-get install -y default-libmysqlclient-dev
+# Install MySQL client with all required dependencies
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    pkg-config \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install MySQL client using the system packages
 RUN pip install mysqlclient
 
 # Copy custom configuration
