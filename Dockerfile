@@ -3,6 +3,10 @@ FROM apache/superset:latest
 # Switch to root to install packages
 USER root
 
+# Install system dependencies required for mysqlclient
+RUN apt-get update && \
+    apt-get install -y pkg-config python3-dev default-libmysqlclient-dev build-essential
+
 # Install the MySQL client driver and other dependencies
 RUN pip install --no-cache-dir mysqlclient
 
