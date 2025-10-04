@@ -1,16 +1,34 @@
+# superset_config.py
+
 import os
+import logging
+
+# Set up logging to print to the console so we can see it in the Render logs
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Use Render's provided PORT
 PORT = int(os.environ.get("PORT", 8088))
 
-# AWS MySQL Database Configuration
-# It is safer to get the entire URI from the environment variable set in render.yml
-SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
-# If you must set a fallback, use the pymysql driver:
-SQLALCHEMY_DATABASE_URI = os.environ.get(
-    "SQLALCHEMY_DATABASE_URI",
-    "mysql+pymysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
-)
+# --- Database Configuration ---
+# This is the most important part. We will debug it.
+db_uri_from_env = os.environ.get("SQLALCHEMY_DATABASE_URI")
+
+# Log the raw value from the environment variable
+logger.info(f"DEBUG: Raw SQLALCHEMY_DATABASE_URI from environment is: '{db_uri_from_env}'")
+
+# Set the final URI. If the env var is not set, this will be None and cause the error.
+if db_uri_from_env:
+    SQLALCHEMY_DATABASE_URI = db_uri_from_env
+else:
+    # This block should NOT be reached on Render if your render.yaml is correct.
+    # If it is, it means the environment variable is not being passed to the container.
+    logger.error("CRITICAL: SQLALCHEMY_DATABASE_URI environment variable is NOT SET! Application will fail.")
+    # We set it to None explicitly to show the error.
+    SQLALCHEMY_DATABASE_URI = None
+
+# Log the final value being used by Superset
+logger.info(f"DEBUG: Final SQLALCHEMY_DATABASE_URI is: '{SQLALCHEMY_DATABASE_URI}'")
 
 # Secret key
 SECRET_KEY = os.environ.get(
@@ -50,13 +68,13 @@ CACHE_CONFIG = {
     'CACHE_DEFAULT_TIMEOUT': 300
 }
 
-# Database connection pool settings (important for production)
+# Database connection pool settings
 SQLALCHEMY_ENGINE_OPTIONS = {
-    'pool_recycle': 3600,  # Recycle connections before AWS RDS timeout
-    'pool_pre_ping': True, # Verify connection is alive before using
+    'pool_recycle': 3600,
+    'pool_pre_ping': True,
     'pool_size': 10,
     'max_overflow': 20,
 }
 
-# Enable proxy fix for handling headers correctly behind Render's load balancer
+# Enable proxy fix for Render's load balancer
 ENABLE_PROXY_FIX = True

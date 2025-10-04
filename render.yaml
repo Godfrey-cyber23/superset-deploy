@@ -1,3 +1,5 @@
+# render.yaml
+
 services:
   - type: web
     name: superset-dashboard
@@ -8,5 +10,6 @@ services:
       - key: SUPERSET_SECRET_KEY
         value: "nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
       - key: SQLALCHEMY_DATABASE_URI
+        # Ensure the entire value is in quotes to handle special characters like '*'
         value: "mysql+pymysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
     plan: free
