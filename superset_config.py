@@ -1,34 +1,13 @@
 # superset_config.py
 
 import os
-import logging
-
-# Set up logging to print to the console so we can see it in the Render logs
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 # Use Render's provided PORT
 PORT = int(os.environ.get("PORT", 8088))
 
 # --- Database Configuration ---
-# This is the most important part. We will debug it.
-db_uri_from_env = os.environ.get("SQLALCHEMY_DATABASE_URI")
-
-# Log the raw value from the environment variable
-logger.info(f"DEBUG: Raw SQLALCHEMY_DATABASE_URI from environment is: '{db_uri_from_env}'")
-
-# Set the final URI. If the env var is not set, this will be None and cause the error.
-if db_uri_from_env:
-    SQLALCHEMY_DATABASE_URI = db_uri_from_env
-else:
-    # This block should NOT be reached on Render if your render.yaml is correct.
-    # If it is, it means the environment variable is not being passed to the container.
-    logger.error("CRITICAL: SQLALCHEMY_DATABASE_URI environment variable is NOT SET! Application will fail.")
-    # We set it to None explicitly to show the error.
-    SQLALCHEMY_DATABASE_URI = None
-
-# Log the final value being used by Superset
-logger.info(f"DEBUG: Final SQLALCHEMY_DATABASE_URI is: '{SQLALCHEMY_DATABASE_URI}'")
+# This will now work correctly because we've set the variable in the Render UI.
+SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
 # Secret key
 SECRET_KEY = os.environ.get(
