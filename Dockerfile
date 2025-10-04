@@ -2,6 +2,9 @@ FROM apache/superset:latest
 
 USER root
 
+# Install required Python packages
+RUN pip install --no-cache-dir flask-cors
+
 # Copy custom configuration
 COPY superset_config.py /app/
 
