@@ -6,8 +6,7 @@ USER root
 # Install system dependencies and the recommended MySQL driver
 RUN apt-get update && \
     apt-get install -y default-libmysqlclient-dev build-essential pkg-config && \
-    # Install mysqlclient, the preferred MySQL driver for production:cite[6]
-    /app/.venv/bin/pip install --no-cache-dir mysqlclient
+    pip install --no-cache-dir mysqlclient
 
 # Copy your custom configuration file into the container
 COPY superset_config.py /app/superset_config.py
