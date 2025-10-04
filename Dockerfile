@@ -2,6 +2,8 @@
 
 FROM apache/superset:latest
 
+# Force a rebuild on 2025-10-04
+
 # Switch to root to install packages
 USER root
 
@@ -22,7 +24,6 @@ USER superset
 ENV SUPERSET_SECRET_KEY="nWuURhmumjbmbL0Rm9LVIJOGkMsUY7G27rHZpK_7icnwM1_6mFADNCnTq8YOXJ7n2ziX1SwnApM2PRdoBKmG5A"
 
 # Run database migrations, create an admin user, and load initial data
-# Note: The syntax error from your original file has been fixed here.
 RUN superset db upgrade && \
     superset fab create-admin \
         --username admin \
