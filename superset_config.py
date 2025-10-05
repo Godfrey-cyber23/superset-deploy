@@ -3,7 +3,7 @@ import os
 # Server configuration
 PORT = int(os.environ.get("PORT", 8088))
 
-# Database Configuration - Use mysqlclient (more reliable)
+# Database Configuration - The URI is passed from the environment variable
 SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
 
 # Secret key
