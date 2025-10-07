@@ -32,6 +32,8 @@ services:
         value: User
       - key: SUPERSET_ADMIN_EMAIL
         value: godfreyb998@gmail.com
+      - key: SUPERSET_ADMIN_PASSWORD
+        value: Admin@2025
 
       # --- Redis Configuration (Optional but Recommended) ---
       # If you add a Redis instance on Render, it will automatically provide
