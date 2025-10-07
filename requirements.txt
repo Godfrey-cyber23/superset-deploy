@@ -1,2 +1,2 @@
 # MySQL database driver
-PyMySQL==1.1.0
+mysqlclient==2.1.1

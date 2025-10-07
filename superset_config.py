@@ -12,7 +12,7 @@ DB_PORT = os.environ.get('DB_PORT', '3306')
 DB_NAME = os.environ.get('DB_NAME', 'exam_system_db')
 
 # Use PyMySQL connection string
-SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+SQLALCHEMY_DATABASE_URI = f'mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 # Redis Configuration (if using Redis)
 REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
