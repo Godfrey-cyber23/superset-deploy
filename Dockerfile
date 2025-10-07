@@ -8,14 +8,35 @@ ENV SUPERSET_CONFIG_PATH=/app/superset_config.py
 COPY superset_config.py /app/
 COPY requirements.txt /app/
 
-# Install PyMySQL in the same virtual environment where Superset runs
+# Debug: Find the correct Python environment
 USER root
-RUN echo "=== Installing PyMySQL in Superset's Virtual Environment ===" && \
-    # Install using the virtual environment's pip
-    /app/.venv/bin/pip install -r requirements.txt && \
-    echo "=== Verifying Installation in Virtual Environment ===" && \
-    /app/.venv/bin/pip list | grep -i pymysql && \
-    /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported in virtual environment')"
+RUN echo "=== Finding Python Environments ===" && \
+    echo "1. All Python executables:" && \
+    find / -name "python*" -type f -executable 2>/dev/null | grep -v __pycache__ | head -20 && \
+    echo "2. All pip executables:" && \
+    find / -name "pip*" -type f -executable 2>/dev/null | grep -v __pycache__ | head -20 && \
+    echo "3. Checking common Python locations:" && \
+    ls -la /usr/local/bin/python* 2>/dev/null || echo "No python in /usr/local/bin" && \
+    ls -la /usr/bin/python* 2>/dev/null || echo "No python in /usr/bin" && \
+    echo "4. Current PATH:" && echo $PATH && \
+    echo "5. Which python:" && which python && \
+    echo "6. Which python3:" && which python3
+
+# Check where Superset is installed
+RUN echo "=== Finding Superset Installation ===" && \
+    echo "1. Superset command location:" && \
+    which superset || echo "superset not in PATH" && \
+    echo "2. Finding superset in filesystem:" && \
+    find / -name "superset" -type f 2>/dev/null | head -10 && \
+    echo "3. Checking Python packages:" && \
+    python -c "import superset; print('Superset found at:', superset.__file__)" 2>/dev/null || echo "Cannot import superset"
+
+# Install PyMySQL using the correct Python environment
+RUN echo "=== Installing PyMySQL ===" && \
+    python -m pip install -r requirements.txt && \
+    echo "=== Verifying Installation ===" && \
+    python -m pip list | grep -i pymysql && \
+    python -c "import pymysql; print('SUCCESS: PyMySQL imported successfully')"
 
 USER superset
 
