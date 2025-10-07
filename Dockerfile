@@ -15,15 +15,7 @@ RUN echo "=== Installing PyMySQL directly into virtual environment ===" && \
     echo "=== Verifying Installation ===" && \
     /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported in virtual environment')"
 
-# Create a startup script that runs initialization then starts Superset
-RUN echo "#!/bin/bash" > /app/startup.sh && \
-    echo "# Run initialization in background" >> /app/startup.sh && \
-    echo "(sleep 20 && /app/.venv/bin/superset db upgrade && /app/.venv/bin/superset fab create-admin --username admin --firstname Admin --lastname User --email godfreyb998@gmail.com --password Admin@2025 && /app/.venv/bin/superset init) &" >> /app/startup.sh && \
-    echo "# Start Superset" >> /app/startup.sh && \
-    echo "exec /app/docker/docker-bootstrap.sh server" >> /app/startup.sh && \
-    chmod +x /app/startup.sh
-
 USER superset
 
-# Use our custom startup script
-CMD ["/app/startup.sh"]
+# The base image already has a CMD to run the Superset server
+# It should automatically create admin user from environment variables
