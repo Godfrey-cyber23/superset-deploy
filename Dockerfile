@@ -8,15 +8,18 @@ ENV SUPERSET_CONFIG_PATH=/app/superset_config.py
 COPY superset_config.py /app/
 COPY requirements.txt /app/
 
-# Install PyMySQL in the virtual environment using system pip
+# Install pip in the virtual environment, then install PyMySQL
 USER root
-RUN echo "=== Installing PyMySQL in Virtual Environment ===" && \
-    # Use system pip to install into the virtual environment
-    /usr/local/bin/pip install -t /app/.venv/lib/python3.10/site-packages/ -r requirements.txt && \
+RUN echo "=== Setting up Virtual Environment ===" && \
+    # Install pip in the virtual environment
+    /usr/local/bin/python -m ensurepip && \
+    # Upgrade pip in the virtual environment
+    /app/.venv/bin/python -m pip install --upgrade pip && \
+    echo "=== Installing PyMySQL ===" && \
+    # Now use the virtual environment's pip
+    /app/.venv/bin/pip install -r requirements.txt && \
     echo "=== Verifying Installation ===" && \
-    /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL imported in virtual environment')" && \
-    echo "=== Checking installed packages ===" && \
-    /app/.venv/bin/python -c \"import pkg_resources; installed_packages = [d for d in pkg_resources.working_set]; mysql_packages = [p for p in installed_packages if 'mysql' in p.key.lower()]; print('MySQL-related packages:', [p.key for p in mysql_packages])\"
+    /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL imported successfully')"
 
 USER superset
 
