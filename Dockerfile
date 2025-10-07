@@ -3,18 +3,19 @@ FROM apache/superset:latest
 
 # Set the environment variable for the config path
 ENV SUPERSET_CONFIG_PATH=/app/superset_config.py
+ENV PYTHONPATH=/app/.venv/lib/python3.10/site-packages:/app/.local/lib/python3.10/site-packages:$PYTHONPATH
 
 # Copy your custom configuration and requirements
 COPY superset_config.py /app/
 COPY requirements.txt /app/
 
-# Switch to root to install packages system-wide
+# Fix pip cache permissions and install packages
 USER root
+RUN mkdir -p /app/superset_home/.cache/pip && \
+    chown -R superset:superset /app/superset_home/.cache
+USER superset
 
 # Install any additional Python packages from your requirements.txt
-RUN pip install -r requirements.txt
-
-# Switch back to superset user for security
-USER superset
+RUN pip install --user -r requirements.txt
 
 # The base image already has a CMD to run the Superset server, so we don't need to add one.
