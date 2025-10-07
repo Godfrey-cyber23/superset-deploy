@@ -4,7 +4,6 @@ services:
     name: superset-app
     env: docker
     repo: https://github.com/Godfrey-cyber23/superset-deploy.git 
-    rootDir: superset # Tells Render to look for the Dockerfile in the 'superset' directory
     plan: free
     healthCheckPath: /health
     envVars:
