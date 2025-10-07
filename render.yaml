@@ -27,7 +27,7 @@ services:
       - key: SUPERSET_ADMIN_USERNAME
         value: admin
       - key: SUPERSET_ADMIN_FIRST_NAME
-        value: Admin
+        value: admin
       - key: SUPERSET_ADMIN_LAST_NAME
         value: User
       - key: SUPERSET_ADMIN_EMAIL
