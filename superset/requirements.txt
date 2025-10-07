@@ -1,0 +1,5 @@
+# Use the official Superset package, extras are included in the Docker image
+# We only need to add additional drivers or libraries here
+
+# MySQL database driver
+mysqlclient

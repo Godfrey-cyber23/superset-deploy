@@ -1,12 +1,43 @@
 services:
+  # This is the Superset Web Application
   - type: web
-    name: superset-dashboard
+    name: superset-app
     env: docker
-    docker:
-      dockerfile: Dockerfile
-    envVars:
-      - key: SUPERSET_SECRET_KEY
-        generateValue: true
-      - key: SQLALCHEMY_DATABASE_URI
-        value: "mysql+pymysql://admin:FinalYearProject*2025@exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com:3306/exam_system_db"
+    repo: https://github.com/Godfrey-cyber23/superset-deploy.git 
+    rootDir: superset # Tells Render to look for the Dockerfile in the 'superset' directory
     plan: free
+    healthCheckPath: /health
+    envVars:
+      # These variables are used by superset_config.py
+      - key: DB_USER
+        value: admin
+      - key: DB_PASSWORD
+        value: FinalYearProject*2025 
+      - key: DB_HOST
+        value: exam-system-db.cmvs2sqwmdz5.us-east-1.rds.amazonaws.com
+      - key: DB_PORT
+        value: 3306
+      - key: DB_NAME
+        value: exam_system_db
+      
+      # --- Superset Admin User Creation ---
+      # These variables are used by the official Superset Docker image
+      # to create an admin user on the first run.
+      - key: SUPERSET_CREATE_ADMIN
+        value: "true"
+      - key: SUPERSET_ADMIN_USERNAME
+        value: admin
+      - key: SUPERSET_ADMIN_FIRST_NAME
+        value: Admin
+      - key: SUPERSET_ADMIN_LAST_NAME
+        value: User
+      - key: SUPERSET_ADMIN_EMAIL
+        value: godfreyb998@gmail.com
+      - key: SUPERSET_ADMIN_PASSWORD
+        generateValue: true # Let Render generate a secure password
+      
+      # --- Redis Configuration (Optional but Recommended) ---
+      # If you add a Redis instance on Render, it will automatically provide
+      # the REDIS_URL environment variable. You can add it here manually if needed.
+      # - key: REDIS_URL
+      #   value: redis://your-render-redis-host:6379
