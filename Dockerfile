@@ -11,19 +11,22 @@ COPY requirements.txt /app/
 # Install PyMySQL directly into the virtual environment using system pip
 USER root
 RUN echo "=== Installing PyMySQL directly into virtual environment ===" && \
-    # Use system pip to install directly into the virtual environment's site-packages
     /usr/local/bin/pip install -t /app/.venv/lib/python3.10/site-packages/ -r requirements.txt && \
     echo "=== Verifying Installation ===" && \
     /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported in virtual environment')"
 
-# Create initialization script to ensure admin user is created with correct password
-RUN echo "#!/bin/bash" > /app/init_admin.sh && \
-    echo "# Wait for Superset to be ready" >> /app/init_admin.sh && \
-    echo "sleep 20" >> /app/init_admin.sh && \
-    echo "# Ensure admin user is created with correct password" >> /app/init_admin.sh && \
-    echo "/app/.venv/bin/superset fab reset-password --username admin --password Admin@2025 2>/dev/null || echo 'Password reset completed or user does not exist'" >> /app/init_admin.sh && \
-    echo "echo 'Admin password initialization completed'" >> /app/init_admin.sh && \
-    chmod +x /app/init_admin.sh
+# Create initialization script to set up database and admin user
+RUN echo "#!/bin/bash" > /app/init_superset.sh && \
+    echo "# Wait for database to be ready" >> /app/init_superset.sh && \
+    echo "sleep 10" >> /app/init_superset.sh && \
+    echo "# Initialize database" >> /app/init_superset.sh && \
+    echo "/app/.venv/bin/superset db upgrade" >> /app/init_superset.sh && \
+    echo "# Create admin user" >> /app/init_superset.sh && \
+    echo "/app/.venv/bin/superset fab create-admin --username admin --firstname Admin --lastname User --email godfreyb998@gmail.com --password Admin@2025" >> /app/init_superset.sh && \
+    echo "# Initialize Superset" >> /app/init_superset.sh && \
+    echo "/app/.venv/bin/superset init" >> /app/init_superset.sh && \
+    echo "echo 'Superset initialization completed'" >> /app/init_superset.sh && \
+    chmod +x /app/init_superset.sh
 
 USER superset
 

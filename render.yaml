@@ -1,7 +1,7 @@
 services:
   # This is the Superset Web Application
   - type: web
-    name: superset-app
+    name: superset-exam-dashboards
     env: docker
     repo: https://github.com/Godfrey-cyber23/superset-deploy.git 
     plan: free
@@ -27,16 +27,10 @@ services:
       - key: SUPERSET_ADMIN_USERNAME
         value: admin
       - key: SUPERSET_ADMIN_FIRST_NAME
-        value: admin
+        value: Admin
       - key: SUPERSET_ADMIN_LAST_NAME
         value: User
       - key: SUPERSET_ADMIN_EMAIL
         value: godfreyb998@gmail.com
       - key: SUPERSET_ADMIN_PASSWORD
-        value: "Admin@2025"
-
-      # --- Redis Configuration (Optional but Recommended) ---
-      # If you add a Redis instance on Render, it will automatically provide
-      # the REDIS_URL environment variable. You can add it here manually if needed.
-      # - key: REDIS_URL
-      #   value: redis://your-render-redis-host:6379
+        value: "Admin#2025"

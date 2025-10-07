@@ -14,21 +14,6 @@ DB_NAME = os.environ.get('DB_NAME', 'exam_system_db')
 # Use PyMySQL connection string
 SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
-# Redis Configuration (if using Redis)
-REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
-REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
-REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/1'
-
-CACHE_CONFIG = {
-    'CACHE_TYPE': 'RedisCache',
-    'CACHE_REDIS_URL': REDIS_URL,
-    'CACHE_DEFAULT_TIMEOUT': 300
-}
-
-DATA_CACHE_CONFIG = CACHE_CONFIG
-CELERY_BROKER_URL = REDIS_URL
-RESULTS_BACKEND = REDIS_URL
-
 # Other Settings
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 ENABLE_RBAC = True
