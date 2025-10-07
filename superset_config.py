@@ -18,7 +18,7 @@ DB_PORT = os.environ.get('DB_PORT', '3306')
 DB_NAME = os.environ.get('DB_NAME', 'exam_system_db')
 
 # The SQLAlchemy connection string for your MySQL database
-SQLALCHEMY_DATABASE_URI = f'mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 # --- Performance and Caching (Recommended) ---
 # Superset can use Redis for caching, which significantly improves performance.
