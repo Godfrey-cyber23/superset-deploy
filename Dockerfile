@@ -15,20 +15,15 @@ RUN echo "=== Installing PyMySQL directly into virtual environment ===" && \
     echo "=== Verifying Installation ===" && \
     /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported in virtual environment')"
 
-# Create initialization script
-RUN echo "#!/bin/bash" > /app/init_superset.sh && \
-    echo "# Wait for database to be ready" >> /app/init_superset.sh && \
-    echo "sleep 10" >> /app/init_superset.sh && \
-    echo "# Initialize database" >> /app/init_superset.sh && \
-    echo "/app/.venv/bin/superset db upgrade" >> /app/init_superset.sh && \
-    echo "# Create admin user" >> /app/init_superset.sh && \
-    echo "/app/.venv/bin/superset fab create-admin --username admin --firstname Admin --lastname User --email godfreyb998@gmail.com --password Admin@2025" >> /app/init_superset.sh && \
-    echo "# Initialize Superset" >> /app/init_superset.sh && \
-    echo "/app/.venv/bin/superset init" >> /app/init_superset.sh && \
-    echo "echo 'Superset initialization completed'" >> /app/init_superset.sh && \
-    chmod +x /app/init_superset.sh
-
-# Run initialization in background when container starts
-CMD /app/init_superset.sh & /app/docker/docker-bootstrap.sh server
+# Create a startup script that runs initialization then starts Superset
+RUN echo "#!/bin/bash" > /app/startup.sh && \
+    echo "# Run initialization in background" >> /app/startup.sh && \
+    echo "(sleep 20 && /app/.venv/bin/superset db upgrade && /app/.venv/bin/superset fab create-admin --username admin --firstname Admin --lastname User --email godfreyb998@gmail.com --password Admin@2025 && /app/.venv/bin/superset init) &" >> /app/startup.sh && \
+    echo "# Start Superset" >> /app/startup.sh && \
+    echo "exec /app/docker/docker-bootstrap.sh server" >> /app/startup.sh && \
+    chmod +x /app/startup.sh
 
 USER superset
+
+# Use our custom startup script
+CMD ["/app/startup.sh"]
