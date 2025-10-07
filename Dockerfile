@@ -15,7 +15,7 @@ RUN echo "=== Installing PyMySQL directly into virtual environment ===" && \
     echo "=== Verifying Installation ===" && \
     /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported in virtual environment')"
 
-# Create initialization script to set up database and admin user
+# Create initialization script
 RUN echo "#!/bin/bash" > /app/init_superset.sh && \
     echo "# Wait for database to be ready" >> /app/init_superset.sh && \
     echo "sleep 10" >> /app/init_superset.sh && \
@@ -28,6 +28,7 @@ RUN echo "#!/bin/bash" > /app/init_superset.sh && \
     echo "echo 'Superset initialization completed'" >> /app/init_superset.sh && \
     chmod +x /app/init_superset.sh
 
-USER superset
+# Run initialization in background when container starts
+CMD /app/init_superset.sh & /app/docker/docker-bootstrap.sh server
 
-# The base image already has a CMD to run the Superset server, so we don't need to add one.
+USER superset
