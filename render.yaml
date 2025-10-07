@@ -33,9 +33,7 @@ services:
         value: User
       - key: SUPERSET_ADMIN_EMAIL
         value: godfreyb998@gmail.com
-      - key: SUPERSET_ADMIN_PASSWORD
-        generateValue: true # Let Render generate a secure password
-      
+
       # --- Redis Configuration (Optional but Recommended) ---
       # If you add a Redis instance on Render, it will automatically provide
       # the REDIS_URL environment variable. You can add it here manually if needed.
