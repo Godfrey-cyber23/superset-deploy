@@ -8,29 +8,14 @@ ENV SUPERSET_CONFIG_PATH=/app/superset_config.py
 COPY superset_config.py /app/
 COPY requirements.txt /app/
 
-# Debug: Check environment and install PyMySQL
+# Install PyMySQL in the same virtual environment where Superset runs
 USER root
-RUN echo "=== Debugging Environment ===" && \
-    echo "1. Current user:" && whoami && \
-    echo "2. Python version:" && python --version && \
-    echo "3. Pip version:" && pip --version && \
-    echo "4. Python path:" && python -c "import sys; print('\n'.join(sys.path))" && \
-    echo "5. Checking if Superset config exists:" && ls -la /app/superset_config.py && \
-    echo "6. Checking requirements.txt:" && cat /app/requirements.txt
-
-# Install PyMySQL (pure Python, no system dependencies needed)
-RUN echo "=== Installing PyMySQL ===" && \
-    pip install -r requirements.txt && \
-    echo "=== Verifying Installation ===" && \
-    pip list | grep -i pymysql && \
-    python -c "import pymysql; print('SUCCESS: PyMySQL imported successfully')" && \
-    echo "=== Checking Superset Python Environment ===" && \
-    python -c "import superset; print('Superset path:', superset.__file__)" 2>/dev/null || echo "Superset not importable in this context"
-
-# Additional debug: Check if we can find where superset runs from
-RUN echo "=== Finding Superset Executable ===" && \
-    which superset || echo "superset command not found in PATH" && \
-    find /app -name "*.py" -path "*/superset/*" 2>/dev/null | head -5
+RUN echo "=== Installing PyMySQL in Superset's Virtual Environment ===" && \
+    # Install using the virtual environment's pip
+    /app/.venv/bin/pip install -r requirements.txt && \
+    echo "=== Verifying Installation in Virtual Environment ===" && \
+    /app/.venv/bin/pip list | grep -i pymysql && \
+    /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported in virtual environment')"
 
 USER superset
 
