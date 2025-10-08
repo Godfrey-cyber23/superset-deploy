@@ -26,7 +26,7 @@ RUN echo "=== Installing MySQL Drivers ===" && \
 
 RUN echo "=== Verifying Installation ===" && \
     /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported')" && \
-    /app/.venv/bin/python -c "try: import MySQLdb; print('SUCCESS: mysqlclient can be imported')\nexcept: print('mysqlclient not available, using PyMySQL fallback')"
+    /app/.venv/bin/python -c \"try:\n import MySQLdb\n print('SUCCESS: mysqlclient can be imported')\nexcept:\n print('mysqlclient not available, using PyMySQL fallback')\"
 
 USER superset
 
