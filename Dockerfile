@@ -8,11 +8,14 @@ ENV SUPERSET_CONFIG_PATH=/app/superset_config.py
 COPY superset_config.py /app/
 COPY requirements.txt /app/
 
-# Install both MySQL drivers
+# Install PyMySQL directly into the virtual environment using system pip
 USER root
-RUN apt-get update && apt-get install -y default-libmysqlclient-dev build-essential && \
-    pip install -r requirements.txt
+RUN echo "=== Installing PyMySQL directly into virtual environment ===" && \
+    /usr/local/bin/pip install -t /app/.venv/lib/python3.10/site-packages/ -r requirements.txt && \
+    echo "=== Verifying Installation ===" && \
+    /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported in virtual environment')"
 
 USER superset
 
 # Use the default command from the base image
+# The base image already has a CMD to run the Superset server
