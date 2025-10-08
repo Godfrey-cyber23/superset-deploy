@@ -19,14 +19,11 @@ RUN echo "=== Installing System Dependencies ===" && \
     && rm -rf /var/lib/apt/lists/*
 
 RUN echo "=== Installing MySQL Drivers ===" && \
-    # Install PyMySQL (pure Python fallback)
-    /usr/local/bin/pip install -t /app/.venv/lib/python3.10/site-packages/ PyMySQL==1.1.0 && \
-    # Try to install mysqlclient (faster, but requires system deps)
-    /usr/local/bin/pip install -t /app/.venv/lib/python3.10/site-packages/ mysqlclient==2.1.1 || echo "mysqlclient installation failed, using PyMySQL fallback"
+    /usr/local/bin/pip install -t /app/.venv/lib/python3.10/site-packages/ PyMySQL==1.1.0 mysqlclient==2.1.1
 
 RUN echo "=== Verifying Installation ===" && \
     /app/.venv/bin/python -c "import pymysql; print('SUCCESS: PyMySQL can be imported')" && \
-    /app/.venv/bin/python -c \"try:\n import MySQLdb\n print('SUCCESS: mysqlclient can be imported')\nexcept:\n print('mysqlclient not available, using PyMySQL fallback')\"
+    /app/.venv/bin/python -c "import MySQLdb; print('SUCCESS: mysqlclient can be imported')"
 
 USER superset
 
